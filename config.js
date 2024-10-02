@@ -16,12 +16,12 @@ global.groupevent = true;                //This is the new variable for controll
 global.statusseen = false;                 //make true to view statuses 
 global.ANTI_BOT = false;
 global.PM_BLOCKER = false;
-global.CHATBOT = false;
+global.CHATBOT = true;
 
 global.SESSION_ID = process.env.SESSION_ID || "taira_tech-uk8TiZxL#ZZv7LGuqWJSa1950Hsc2thM-fbQYu57F772VOZwrfRk"
 global.Owner = ["254740277957"]; //like 2347080968564 
 global.OwnerName =  "Hillary";
-global.BotName = "♱MAKINO-MD-V2♱♡⃤";
+global.BotName = "Hillary";
 global.packname = "♱MAKINO-MD-V2♱♡⃤";                             //Do not change.
 global.author = "TAIRA MAKINO";                               //Do not change.
 global.BotSourceCode = "https://github.com/anonphoenix007/MAKINO-MD-V2"; //Do not change.
