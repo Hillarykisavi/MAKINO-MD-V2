@@ -16,7 +16,6 @@ const pm2 = require('pm2');
 const util = require("util");
 const { promisify } = require('util');
 const setTimeoutPromise = promisify(setTimeout);
-const chalk = require("chalk");
 const axios = require('axios');
 const { spawn, exec, execSync } = require("child_process");
 const moment = require("moment-timezone");
@@ -283,14 +282,6 @@ m.message.InteractiveResponseMessage.NativeFlowResponseMessage ||               
     const reply = (teks) => {
       Taira.sendMessage(m.chat,
       { text: teks,
-      contextInfo:{
-      mentionedJid:[sender],
-      forwardingScore: 9999999,
-      isForwarded: true,
-      forwardedNewsletterMessageInfo: {
-      newsletterName: "♱Click Me♱♡⃤",
-      newsletterJid: "120363320283062687@newsletter",
-      },
       "externalAdReply": {
       "showAdAttribution": true,
       "containsAutoReply": true,
@@ -299,7 +290,7 @@ m.message.InteractiveResponseMessage.NativeFlowResponseMessage ||               
       "previewType": "VIDEO",
       "thumbnailUrl": "https://graph.org/file/30265f2195f076e1bb3c3.jpg",
       "thumbnail": fs.readFileSync(`./Assets/pic7.jpg`),
-      "sourceUrl": `https://whatsapp.com/channel/0029Vag5l2ALSmbi14YryJ2r`}}},
+      "sourceUrl": `https://whatsapp.com/channel/0029Vag5l2ALSmbi14YryJ2r`}},
       { quoted: m})
 	  }
 	  
@@ -317,17 +308,19 @@ const v2features = () =>{
     }
 
     if (m.message) {
-      addBalance(m.sender, randomNomor(574), balance);
       console.log(
-        chalk.black(chalk.bgWhite(`[ NEW MESSAGE RECEIVED ]\n`)),
-        chalk.black(chalk.bgGreen(new Date())),
-        chalk.black(chalk.bgBlue(budy || m.mtype)) +
-        "\n" +
-        chalk.magenta("=> 💧Message From"),
-        chalk.green(pushname),
-        chalk.yellow(m.sender) + "\n" + chalk.blueBright(`=> 🌐 Message In\n`),
-        chalk.green(m.isGroup ? pushname : "🧩Private Chat", m.chat)
-      );
+        `[ NEW MESSAGE RECEIVED ]\n
+        ${new Date()}
+        ${budy || m.mtype}
+        
+        => 💧Message From
+        ${pushname}
+        ${m.sender}
+	
+	=> 🌐 Message In
+ 
+        ${m.isGroup ? pushname : "🧩Private Chat", m.chat}
+	`);
     }
 
     if (isCmd && !isUser) {
@@ -2780,6 +2773,8 @@ case 'tovv': {
         Taira.sendMessage(m.chat, { text: args.join(" ") ? args.join(" ") : '', mentions: participants.map(a => a.id) }, { quoted: m })
       }
         break;
+
+		    
 	case 'ping': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
@@ -2839,6 +2834,7 @@ case 'tovv': {
 	  Taira.sendMessage(from, { react: { text: "💧", key: m.key } })
           await Taira.sendMessage(m.chat, {text: `${m.chat}`}, { quoted: m})
         }
+	break 
 
 
       case 'nowa': case 'find': case 'stalk': case 'stalknumber': {
@@ -5985,7 +5981,7 @@ if (stdout) return reply(`${stdout}`)
 let file = require.resolve(__filename)
 fs.watchFile(file, () => {
   fs.unwatchFile(file)
-  console.log(chalk.redBright(`Update ${__filename}`))
+  console.log(`Update ${__filename}`)
   delete require.cache[file]
   require(file)
 })
