@@ -1380,18 +1380,45 @@ case 'tovv': {
       case 'film': case 'movie': case 'moviesearch':
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
-        reply(mess.waiting)
         if (!q) return reply(`Please enter a Movie search term...\nExample: ${prefix}movie Spiderman`)
-        xfarrapi.Film(q)
-          .then(data => {
-            console.log(data)
-            let krl = `*Search Term:* ${q}\n\n`
-            for (let i of data) {
-              krl += (`${prefix}----------------------------------------------------------------------------\n\n\n*Movie Name:* ${i.judul}\n *Quality :* ${i.quality}\n *Type : ${i.type}*\n *Uploaded on :* ${i.upload}\n *Source URL :* ${i.link}\n\n\n`)
-            }
-            Taira.sendMessage(from, { image: { url: data[0].thumb }, caption: krl }, { quoted: fdocs })
-          });
-        break;
+        let msearch = await axios.get(
+          `http://www.omdbapi.com/?apikey=742b2d09&t=${text}&plot=full`
+        );
+        let mv2 = "";
+        console.log(msearch.data);
+        mv2 +=
+          "♱MAKINO-MD-V2♱♡⃤\n\n" + " ``` MOVIE SEARCH```\n";
+        mv2 += "Title      : " + msearch.data.Title + "\n";
+        mv2 += "Year       : " + msearch.data.Year + "\n";
+        mv2 += "Rated      : " + msearch.data.Rated + "\n";
+        mv2 += "Released   : " + msearch.data.Released + "\n";
+        mv2 += "Runtime    : " + msearch.data.Runtime + "\n";
+        mv2 += "Genre      : " + msearch.data.Genre + "\n";
+        mv2 += "Director   : " + msearch.data.Director + "\n";
+        mv2 += "Writer     : " + msearch.data.Writer + "\n";
+        mv2 += "Actors     : " + msearch.data.Actors + "\n";
+        mv2 += "Plot       : " + msearch.data.Plot + "\n";
+        mv2 += "Language   : " + msearch.data.Language + "\n";
+        mv2 += "Country    : " + msearch.data.Country + "\n";
+        mv2 += "Awards     : " + msearch.data.Awards + "\n";
+        mv2 += "BoxOffice  : " + msearch.data.BoxOffice + "\n";
+        mv2 += "Production : " + msearch.data.Production + "\n";
+        mv2 += "imdbRating : " + msearch.data.imdbRating + "\n";
+        mv2 += "imdbVotes  : " + msearch.data.imdbVotes + "";
+        Taira.sendMessage(
+          m.chat,
+          {
+            image: {
+              url: msearch.data.Poster,
+            },
+            caption: mv2,
+          },
+          {
+            quoted: m,
+          }
+        );
+        break;  
+      
 
       case 'wallpaper':
       case 'animewallpaper':
@@ -1424,25 +1451,22 @@ case 'tovv': {
         break;
 
 
-      case 'wikimedia': case 'wikiimage': {
+case 'wikimedia': case 'wikiimage': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!args.join(" ")) return reply("What picture are you looking for??")
         let { wikimedia } = require('./lib/scraper')
-        anu = await wikimedia(args)
-        hasil = anu[Math.floor(Math.random() * anu.length)]
-        let buttons = [
-          { buttonId: `${prefix}wikimedia ${args.join(" ")}`, buttonText: { displayText: 'Next Image' }, type: 1 }
-        ]
-        let buttonMessage = {
-          image: { url: hasil.image },
-          caption: `Title : ${hasil.title}\nSource : ${hasil.source}\nMedia Url : ${hasil.image}`,
-          footer: `♱MAKINO-MD-V2♱♡⃤`,
-          buttons: buttons,
-          headerType: 4
+          let anumedia = await wikimedia(text);
+          result = anumedia[Math.floor(Math.random() * anumedia.length)];
+          Taira.sendMessage(
+            m.chat,
+            {
+              caption: `♱MAKINO-MD-V2♱♡⃤\n\nTitle : ${result.title}\nSource : ${result.source}\nMedia Url : ${result.image}`,
+              image: { url: result.image },
+            },
+            { quoted: m }
+          );
         }
-        Taira.sendMessage(m.chat, buttonMessage, { quoted: m })
-      }
         break;
 
 
@@ -3784,41 +3808,39 @@ break;
       }
         break;
 
-      case 'twitter': case 'ttdl': {
+         case 'twitter': case 'ttdl': {
   if (!q) return reply("Provide a Twitter url to continue.")
-  if (isBan) return reply(mess.banned);
+   if (isBan) return reply(mess.banned);
   if (isBanChat) return reply(mess.bangc);
   if (!text) return reply(`Please provide the link!\n\nExample: ${prefix}${command} https://x.com/InternetH0F/status/1826967781629182205`)
-  //if (!q.includes('x.com')) return reply(`Invalid twitter link provided,recheck!`)
-  if (!isUrl(args[0]) && !args[0].includes('x.com')) return reply(`Invalid twitter link provided,recheck!`)
-  const data = fg.twitter(q)
-  const reslt = data.HD
-  const trimmed = reslt.match(/.*\.mp4/)[0];
-  await Taira.sendMessage(m.chat, { video: { url: trimmed }}, { quoted: m})
-	}
+let ty = await fetchJson(`https://widipe.com/download/twtdl?url=${encodeURIComponent(q)}`)
+await Taira.sendMessage(m.chat, {
+video: {
+url: ty.result.url.hd,
+caption: '♱MAKINO-MD-V2♱♡⃤'
+}
+}, {
+quoted: m
+})
+}
+break;
+
 
       case 'fbdl': case 'fb': case 'facebook': case 'fbmp4': {
         if (isBan) return reply(mess.banned);
         if (isBanChat) return reply(mess.bangc);
         if (!text) return reply(`Please provide the link!\n\nExample: ${prefix}facebook https://www.facebook.com/groups/599913174599515/permalink/705467384044093/`)
-        if (!isUrl(args[0]) && !args[0].includes('facebook.com')) return reply(`Invalid link!`)
-        let bocil = require('@bochilteam/scraper')
-        bocil.facebookdlv2(`${text}`).then(async (data) => {
-          let txt = `「 _Facebook Downloader_ 」\n\n`
-          txt += `*Title :* ${data.title}\n`
-          txt += `*Quality :* ${data.result[0].quality}\n`
-          txt += `*Description:* ${data.description}\n`
-          txt += `*URL :* ${text}\n\n`
-          buf = await getBuffer(data.thumbnail)
-          Taira.sendMessage(m.chat, { image: { url: data.thumbnail }, jpegThumbnail: buf, caption: `${txt}` }, { quoted: m })
-          for (let i of data.result) {
-            Taira.sendMessage(m.chat, { video: { url: i.url }, jpegThumbnail: buf, caption: `*Quality :* ${i.quality}` }, { quoted: m })
-          }
-        }).catch((err) => {
-          reply(mess.error)
-        })
-      }
-        break;
+let tyf = await fetchJson(`https://widipe.com/download/fbdl?url=${encodeURIComponent(q)}`)
+await Taira.sendMessage(m.chat, {
+video: {
+url: tyf.result.Normal_video,
+caption: '♱MAKINO-MD-V2♱♡⃤'
+}
+}, {
+quoted: m
+})
+}
+break;
 
 
       case 'yts': case 'ytsearch': {
@@ -5464,7 +5486,8 @@ if(global.menutype === "v1"){
   await Taira.sendMessage(m.chat , { text: helpMenuText}, {quoted: statrp })
   } else if (global.menutype === "v3"){
   Taira.sendMessage(m.chat, {
-video : { url: "https://graph.org/file/fad20d219e426d3c65e5f.mp4" }, 
+//video : { url: "https://graph.org/file/fad20d219e426d3c65e5f.mp4" }, 
+video: { url: "https://widipe.com/file/jpaLRLZBBpPE.mp4" },
 caption: helpMenuText,
 gifPlayback: true,
 contextInfo: {
@@ -5479,7 +5502,7 @@ externalAdReply: {
 showAdAttribution: true,
 title: "♱MAKINO-MD-V2♱♡⃤",
 body: "Taira Makino",
-thumbnailUrl: "https://telegra.ph/file/dfad7a7afb54498391945.jpg",
+thumbnailUrl: "https://widipe.com/file/rGQFTKL2GoTF.jpg",
 sourceUrl: "https://whatsapp.com/channel/0029Vag5l2ALSmbi14YryJ2r",
 mediaType: 1,
 renderLargerThumbnail: true
@@ -5491,14 +5514,15 @@ quoted: m
 } else if(global.menutype === "v4") {
 
   Taira.sendMessage(m.chat, {
-      video : { url: "https://graph.org/file/fad20d219e426d3c65e5f.mp4" },
+      //video : { url: "https://graph.org/file/fad20d219e426d3c65e5f.mp4" },
+      video: { url: "https://widipe.com/file/jpaLRLZBBpPE.mp4" },
       gifPlayback: true,
       caption: helpMenuText,
       contextInfo: {
       externalAdReply: {
       title: '♱MAKINO-MD-V2♱♡⃤',
       body: 'Taira Makino',
-      thumbnailUrl: "https://telegra.ph/file/dfad7a7afb54498391945.jpg",
+      thumbnailUrl: "https://widipe.com/file/rGQFTKL2GoTF.jpg",
       sourceUrl: `https://whatsapp.com/channel/0029Vag5l2ALSmbi14YryJ2r`,
       mediaType: 1,
       renderLargerThumbnail: true
